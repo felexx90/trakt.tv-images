@@ -24,8 +24,8 @@
     },
     "dependencies": {
         "axios": "^0.16.2",
-        "fanart.tv": "2.x.x",
-        "omdbapi": "2.x.x",
+        "react-native-fanart.tv": "git+https://github.com/felexx90/fanart.tv.git",
+        "react-native-omdbapi": "git+https://github.com/felexx90/omdbapi.git",
         "trakt.tv": "5.x.x"
     }
 }
