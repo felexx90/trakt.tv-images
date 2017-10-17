@@ -1,5 +1,5 @@
 {
-    "name": "trakt.tv-images",
+    "name": "react-native-trakt.tv-images",
     "version": "5.1.1",
     "description": "Plugin to get images, extends trakt.tv module",
     "main": "index.js",
