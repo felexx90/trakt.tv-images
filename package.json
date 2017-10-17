@@ -25,7 +25,6 @@
     "dependencies": {
         "axios": "^0.16.2",
         "fanart.tv": "2.x.x",
-        "got": "7.x.x",
         "omdbapi": "2.x.x",
         "trakt.tv": "5.x.x"
     }
