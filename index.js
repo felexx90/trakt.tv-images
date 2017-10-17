@@ -1,6 +1,6 @@
 var Images = module.exports = {}; // Skeleton
 var Trakt; // the main API for trakt (npm: 'trakt.tv')
-var got = require('got');
+var axios = require('axios');
 var Omdb = require('omdbapi');
 var fanart = require('fanart.tv');
 var Fanart = false;
@@ -15,18 +15,19 @@ Images.init = function(trakt, opts) {
     if (opts.fanartApiKey) Fanart = new fanart(opts.fanartApiKey);
     if (opts.tmdbApiKey) TmdbApiKey = opts.tmdbApiKey;
     if (opts.tvdbApiKey) {
-        got('https://api.thetvdb.com/login', {
+        axios({
+            url:'https://api.thetvdb.com/login',
             json: true,
             headers: {
                 'content-type': 'application/json'
             },
             method: 'POST',
-            body: {
+            data: {
                 apikey: opts.tvdbApiKey
             }
         }).then(function(res) {
-            if (res.body && res.body.token) {
-                TvdbApiKey = res.body.token;
+            if (res.data && res.data.token) {
+                TvdbApiKey = res.data.token;
             }
         }).catch(function(err) {});
     };
@@ -183,7 +184,8 @@ var getTmdb = function(id) {
         }
 
         // ditry tmdb v3 calls, because all 3rd party modules are (rightfully) bloated
-        return got('https://api.themoviedb.org/3/movie/' + id + '/images?api_key=' + TmdbApiKey, {
+        return axios({
+            url:'https://api.themoviedb.org/3/movie/' + id + '/images?api_key=' + TmdbApiKey,
             json: true,
             headers: {
                 'content-type': 'application/json'
@@ -195,12 +197,12 @@ var getTmdb = function(id) {
             var psize = 'w780'; // or w780
 
             var built = null, bg = null, pos = null;
-            if (res.body) {
-                if (res.body.backdrops && res.body.backdrops[0]) {
-                    bg = url + bsize + res.body.backdrops[0].file_path;
+            if (res.data) {
+                if (res.data.backdrops && res.data.backdrops[0]) {
+                    bg = url + bsize + res.data.backdrops[0].file_path;
                 }
-                if (res.body.posters && res.body.posters[0]) {
-                    pos = url + psize + res.body.posters[0].file_path;
+                if (res.data.posters && res.data.posters[0]) {
+                    pos = url + psize + res.data.posters[0].file_path;
                 }
                 if (bg || pos) {
                     built = {
@@ -246,9 +248,9 @@ var getTvdb = function(id) {
             return new Promise(function(resol) {
                 var ret = {};
                 ret[name] = null;
-
-                return got(url + '?keyType=' + key, opts).then(function(res) {
-                    var i = res.body;
+                opts.url=url+'?keyType=' + key
+                return axios(opts).then(function(res) {
+                    var i = res.data;
                     if (i && i.data && i.data[0]) {
                         ret[name] = imbase + i.data[0].fileName;
                     }
