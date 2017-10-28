@@ -6,6 +6,7 @@ var fanart = require('react-native-fanart.tv');
 var Fanart = false;
 var TmdbApiKey = false;
 var TvdbApiKey = false;
+var OmdbApiKey = false;
 var Small = false;
 
 // Initialize the module
@@ -14,6 +15,7 @@ Images.init = function(trakt, opts) {
   if (opts.smallerImages) Small = true;
   if (opts.fanartApiKey) Fanart = new fanart(opts.fanartApiKey);
   if (opts.tmdbApiKey) TmdbApiKey = opts.tmdbApiKey;
+  if (opts.omdbApiKey) OmdbApiKey = opts.omdbApiKey;
   if (opts.tvdbApiKey) {
     axios({
       url: 'https://api.thetvdb.com/login',
@@ -149,7 +151,7 @@ var getFanart = function(id, type) {
 
 var getOmdb = function(id, type) {
   return new Promise(function(resolve) {
-    if (!id || !type) {
+    if (!id || !type || !OmdbApiKey) {
       return resolve({
         source: 'omdb',
         img: null
@@ -163,7 +165,8 @@ var getOmdb = function(id, type) {
         : 'episode';
     return Omdb.get({
       id: id,
-      type: omdbCat
+      type: omdbCat,
+      apikey: OmdbApiKey
     }).then(function(images) {
       // build output
       var obj = null;
